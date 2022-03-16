@@ -18,6 +18,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
+#include "bondcpp/bond.hpp"
+#include "bond/msg/constants.hpp"
 
 namespace lifecycle_interface
 {
@@ -33,6 +35,9 @@ using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface
 class LifecycleInterface : public rclcpp_lifecycle::LifecycleNode
 {
 public:
+  // Connection to tell that server is still up
+  std::unique_ptr<bond::Bond> bond_{nullptr};
+
   /**
    * @brief A constructor for lifecycle_interface::LifecycleInterface
    * @param name Name of node

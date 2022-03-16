@@ -36,6 +36,15 @@ CallbackReturn LifecycleInterface::on_activate(const rclcpp_lifecycle::State & s
   RCLCPP_INFO(this->get_logger(), "Activating Ouster driver node.");
   onActivate();
   is_active = true;
+  // create bond connection
+  bond_ = std::make_unique<bond::Bond>(
+  std::string("bond"),
+  this->get_name(),
+  shared_from_this());
+
+  bond_->setHeartbeatPeriod(0.10);
+  bond_->setHeartbeatTimeout(4.0);
+  bond_->start();
   return CallbackReturn::SUCCESS;
 }
 
@@ -43,6 +52,9 @@ CallbackReturn LifecycleInterface::on_deactivate(const rclcpp_lifecycle::State &
 {
   RCLCPP_INFO(this->get_logger(), "Deactivating Ouster driver node.");
   onDeactivate();
+  if (bond_) {
+    bond_.reset();
+  }
   is_active = false;
   return CallbackReturn::SUCCESS;
 }
